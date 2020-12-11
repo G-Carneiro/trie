@@ -1,26 +1,68 @@
-#include "include/node.h"
+#include <fstream>
 #include <iostream>
+#include <string>
+
+#include "trie.h"
 
 int main() {
-  using namespace std;
+	using namespace std;
+	using namespace structures;
+	TrieNode* root = initNode();
 
-  cout << "Hello World" << endl;
+	string filename;
 
-  //string filename;
-  //string word;
+	cin >> filename;
+	int posProx = 0;
 
-  //cin >> filename;  // entrada
+	string line;
+	ifstream myfile(filename);
+	if (myfile.is_open()) {
+		while (getline(myfile, line)) {
+			string word;
+			int i;
+			if (line[0] != '[') {
+				posProx += line.length() + 1;
+				continue;
+			}
+			for (i = 1; i < line.length(); i++) {
+				if (line[i] == ']')
+					break;
+				word += line[i];
+			}
+			word[i] = '\0';
+			int length = line.length();
+			insert(root, word, posProx, length);
+			posProx += line.length() + 1;
+		}
+		myfile.close();
+	} else {
+		printf("Nao abriu arquivo\n");
+	}
 
-  //cout << filename << endl;  // esta linha deve ser removida
+	string word;
+	pair<int, int> p;
+	while (1) {
+		cin >> word;
+		if (word.compare("0") == 0) {
+			break;
+		}
+		p = search(root, word);
+		/*if (p.first == 0 && p.second == 0) {
+		    printf("%s is prefix of words \n", word.c_str());
+		}*/
+		
+		if (p.first == -1) {
+			printf("%s is not prefix \n", word.c_str());
+		}
+		else {
+		    printf("%s is prefix of words \n", word.c_str());
+		    if (p.second != 0) {
+			    printf("%s is at (%d,%d) \n", word.c_str(), p.first, p.second);
+		    }
+		}
+	}
 
-  //while (1) {  // leitura das palavras ate' encontrar "0"
-    //cin >> word;
-    //if (word.compare("0") == 0) {
-      //break;
-    //}
-    //cout << word << endl;
-  //}
-    //teste
-
-  return 0;
+	return 0;
+    
 }
+
