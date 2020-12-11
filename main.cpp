@@ -20,6 +20,7 @@ int main() {
     //}
     //cout << word << endl;
   //}
+    //teste
 
   return 0;
 }
