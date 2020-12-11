@@ -2,7 +2,9 @@
 #define STRUCTURES_TRIE_H
 
 #include <stdio.h>
+
 #include <string>
+#include <vector>
 
 #define ALPHABET_SIZE 26
 
@@ -38,15 +40,41 @@ void insert(struct TrieNode* root, std::string key, int pos, int len) {
   it->len = len;
 }
 
-std::pair<int, int> search(struct TrieNode* root, std::string key) {
-  std::pair<int, int> p;
+bool leave(struct TrieNode* root) {
+  for (int i = 0; i < ALPHABET_SIZE; i++) {
+    if (root->children[i] != nullptr) {
+      return false;
+    }
+  }
+  return true;
+}
+
+int prefix(struct TrieNode* it) {
+  if (it == nullptr) {
+    return 0;
+  }
+
+  int leaves = 0;
+  if (leave(it)) {
+	  leaves++;
+  } else {
+	  for (int i = 0; i < ALPHABET_SIZE; i ++) {
+		  leaves += prefix(it->children[i]);
+	  }
+  }
+
+  return leaves;
+}
+
+std::vector<int> search(struct TrieNode* root, std::string key) {
+  std::vector<int> p(3);
   auto it = root;
 
   for (int i = 0; i < key.length(); i++) {
     int index = key[i] - 'a';
     if (!it->children[index]) {
-      p.first = -1;
-      p.second = -1;
+      p.at(0) = -1;
+      p.at(1) = -1;
       return p;
     }
 
@@ -54,20 +82,18 @@ std::pair<int, int> search(struct TrieNode* root, std::string key) {
   }
 
   if (it && it->len == 0) {
-    p.first = 0;
-    p.second = 0;
+    p.at(0) = 0;
+    p.at(1) = 0;
     return p;
   }
 
-  p.first = it->pos;
-  p.second = it->len;
-
-  if (p.first != -1) {
-	  // Find number of words in which string is prefix of
-  }
+  p.at(0) = it->pos;
+  p.at(1) = it->len;
+  p.at(2) = prefix(it);
 
   return p;
 }
+
 
 }  // namespace structures
 

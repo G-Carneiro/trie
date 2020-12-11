@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <vector>
 #include <string>
 
 #include "include/trie.h"
@@ -39,23 +40,23 @@ int main() {
   }
 
   string word;
-  pair<int, int> p;
+
   while (1) {
     cin >> word;
     if (word.compare("0") == 0) {
       break;
     }
-    p = search(root, word);
+    auto p = search(root, word);
     /*if (p.first == 0 && p.second == 0) {
         printf("%s is prefix of words \n", word.c_str());
     }*/
 
-    if (p.first == -1) {
+    if (p.at(0) == -1) {
       printf("%s is not prefix \n", word.c_str());
     } else {
-      printf("%s is prefix of words \n", word.c_str());
-      if (p.second != 0) {
-        printf("%s is at (%d,%d) \n", word.c_str(), p.first, p.second);
+      printf("%s is prefix of %d words \n", word.c_str(), p.at(2));
+      if (p.at(1) != 0) {
+        printf("%s is at (%d,%d) \n", word.c_str(), p.at(0), p.at(1));
       }
     }
   }
